@@ -1,0 +1,12 @@
+# Certificate material never belongs in source control, even though the root .gitignore already
+# excludes these patterns repo-wide - this is a deliberate belt-and-suspenders reminder right where
+# people will actually drop files.
+*.pfx
+*.p12
+*.pem
+*.key
+*.cer
+*.crt
+
+!.gitignore
+!README.md

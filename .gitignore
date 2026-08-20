@@ -1,0 +1,19 @@
+## Build outputs
+bin/
+obj/
+publish/
+*.user
+
+## IDE
+.vs/
+.idea/
+
+## Certificates - never commit private key material
+*.pfx
+*.p12
+*.pem
+*.key
+
+## Reports produced by the app (local run artifacts, not source)
+*.pdf
+!docs/**/*.pdf

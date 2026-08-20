@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ApiLoadTester.App/ApiLoadTester.App.csproj" />
+    <Project Path="src/ApiLoadTester.Core/ApiLoadTester.Core.csproj" />
+    <Project Path="src/ApiLoadTester.Reporting/ApiLoadTester.Reporting.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ApiLoadTester.Core.Tests/ApiLoadTester.Core.Tests.csproj" />
+  </Folder>
+</Solution>

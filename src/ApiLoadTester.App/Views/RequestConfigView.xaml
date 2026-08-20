@@ -1,0 +1,57 @@
+<UserControl x:Class="ApiLoadTester.App.Views.RequestConfigView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ApiLoadTester.App.ViewModels"
+             xmlns:local="clr-namespace:ApiLoadTester.App.Converters"
+             d:DataContext="{d:DesignInstance Type=vm:RequestConfigViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <StackPanel Margin="4">
+
+        <TextBlock Text="Endpoint" Style="{StaticResource SectionHeaderText}"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox Grid.Column="0" ItemsSource="{Binding HttpMethods, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      SelectedItem="{Binding HttpMethod}" Margin="0,0,6,0"/>
+            <TextBox x:Name="TargetUrlTextBox" Grid.Column="1" Text="{Binding TargetUrl, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="Full https URL of the endpoint under test"/>
+        </Grid>
+        <TextBlock Style="{StaticResource HintText}" Text="e.g. https://api.example.com/v1/orders"/>
+
+        <TextBlock Text="Request Headers" Style="{StaticResource FieldLabelText}"/>
+        <DataGrid ItemsSource="{Binding Headers}" AutoGenerateColumns="False" CanUserAddRows="False"
+                  HeadersVisibility="Column" RowHeight="28" MaxHeight="150" MinHeight="60" BorderBrush="{StaticResource BorderBrush2}" BorderThickness="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Header" Binding="{Binding Key, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                <DataGridTemplateColumn Width="34">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="✕" Padding="4,0" Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                    Command="{Binding DataContext.RemoveHeaderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="+ Add header" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Margin="0,6,0,0"
+                Command="{Binding AddHeaderCommand}"/>
+        <TextBlock Style="{StaticResource HintText}" Text="Common sensitive headers (Authorization, Cookie, ...) are automatically masked in the exported PDF report."/>
+
+        <TextBlock Text="Request Body Template" Style="{StaticResource FieldLabelText}"/>
+        <TextBox Text="{Binding BodyTemplate, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap"
+                  FontFamily="Consolas" Height="90" VerticalScrollBarVisibility="Auto"
+                  IsEnabled="{Binding HttpMethod, Converter={x:Static local:HttpMethodAllowsBodyConverter.Instance}}"/>
+        <TextBlock Style="{StaticResource HintText}"
+                   Text="Optional. Supports {{guid}}, {{seq}}, and {{timestamp}} tokens, substituted with a unique value on every request. Not used for GET/HEAD."/>
+
+        <TextBlock Text="Content-Type" Style="{StaticResource FieldLabelText}"/>
+        <TextBox Text="{Binding ContentType, UpdateSourceTrigger=PropertyChanged}" Width="220" HorizontalAlignment="Left"/>
+    </StackPanel>
+</UserControl>

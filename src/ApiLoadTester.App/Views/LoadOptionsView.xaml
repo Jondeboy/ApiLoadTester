@@ -1,0 +1,61 @@
+<UserControl x:Class="ApiLoadTester.App.Views.LoadOptionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ApiLoadTester.App.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:LoadOptionsViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <StackPanel Margin="4">
+
+        <TextBlock Text="Load Profile" Style="{StaticResource SectionHeaderText}"/>
+
+        <TextBlock Text="Concurrency (virtual users)" Style="{StaticResource FieldLabelText}"/>
+        <TextBox x:Name="ConcurrencyTextBox" Text="{Binding Concurrency, UpdateSourceTrigger=PropertyChanged}" Width="120" HorizontalAlignment="Left"/>
+
+        <TextBlock Text="Ramp-in delay per worker (ms)" Style="{StaticResource FieldLabelText}"/>
+        <TextBox Text="{Binding RampInDelayMs, UpdateSourceTrigger=PropertyChanged}" Width="120" HorizontalAlignment="Left"/>
+        <TextBlock Style="{StaticResource HintText}" Text="Staggers each worker's start so all virtual users don't hit the server in the same instant. 0 = start together."/>
+
+        <Separator Margin="0,14,0,10"/>
+
+        <CheckBox Content="Run for a fixed duration" IsChecked="{Binding UseDuration}" Margin="0,0,0,4"/>
+        <TextBox x:Name="DurationSecondsTextBox" Text="{Binding DurationSeconds, UpdateSourceTrigger=PropertyChanged}" Width="120" HorizontalAlignment="Left"
+                 IsEnabled="{Binding UseDuration}" Margin="20,0,0,0"/>
+        <TextBlock Style="{StaticResource HintText}" Margin="20,2,0,0" Text="seconds"/>
+
+        <CheckBox Content="Stop after a fixed request count" IsChecked="{Binding UseMaxRequestCount}" Margin="0,10,0,4"/>
+        <TextBox Text="{Binding MaxRequestCount, UpdateSourceTrigger=PropertyChanged}" Width="120" HorizontalAlignment="Left"
+                 IsEnabled="{Binding UseMaxRequestCount}" Margin="20,0,0,0"/>
+        <TextBlock Style="{StaticResource HintText}" Margin="20,2,0,0" Text="total requests"/>
+        <TextBlock Style="{StaticResource HintText}" Margin="0,6,0,0" Text="At least one of the two above must be enabled. If both are, the run stops on whichever limit is reached first."/>
+
+        <Separator Margin="0,14,0,10"/>
+
+        <TextBlock Text="Per-request timeout (seconds)" Style="{StaticResource FieldLabelText}"/>
+        <TextBox Text="{Binding RequestTimeoutSeconds, UpdateSourceTrigger=PropertyChanged}" Width="120" HorizontalAlignment="Left"/>
+
+        <TextBlock Text="TLS / Security" Style="{StaticResource SectionHeaderText}" Margin="0,18,0,8"/>
+
+        <TextBlock Text="Minimum TLS protocol" Style="{StaticResource FieldLabelText}"/>
+        <ComboBox ItemsSource="{Binding TlsProtocolOptions, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                  SelectedItem="{Binding MinimumTlsProtocol}" Width="160" HorizontalAlignment="Left"/>
+
+        <CheckBox Content="Validate server certificate" IsChecked="{Binding ValidateServerCertificate}" Margin="0,14,0,0"/>
+        <TextBlock Style="{StaticResource WarningText}" Margin="0,4,0,0"
+                   Visibility="{Binding ValidateServerCertificate, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                   Text="Server certificate validation is DISABLED. Only use this against a known internal/test endpoint - never against a production customer server. This is flagged in the exported report."/>
+
+        <TextBlock Text="Extra trusted CA certificate (optional)" Style="{StaticResource FieldLabelText}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Text="{Binding ExtraTrustedCaPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Margin="0,0,6,0"/>
+            <Button Grid.Column="1" Content="Browse..." Style="{StaticResource SecondaryButton}" Command="{Binding BrowseExtraCaCommand}"/>
+        </Grid>
+        <TextBlock Style="{StaticResource HintText}" Text="For enterprise TLS-inspecting proxies that present a certificate signed by an internal CA."/>
+
+    </StackPanel>
+</UserControl>

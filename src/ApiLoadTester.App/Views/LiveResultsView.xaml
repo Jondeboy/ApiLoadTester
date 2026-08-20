@@ -1,0 +1,84 @@
+<UserControl x:Class="ApiLoadTester.App.Views.LiveResultsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:vm="clr-namespace:ApiLoadTester.App.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:LiveResultsViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="StatTile" TargetType="Border" BasedOn="{StaticResource StatTileBorder}">
+            <Setter Property="Margin" Value="0,0,8,8"/>
+            <Setter Property="MinWidth" Value="100"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Margin="0,0,0,4">
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding Elapsed, StringFormat={}{0:hh\\:mm\\:ss}}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="Elapsed" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding TotalRequests, StringFormat={}{0:N0}}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="Total Requests" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding SuccessRatePercent, StringFormat={}{0:0.#}%}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="Success Rate" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding ErrorCount, StringFormat={}{0:N0}}" Style="{StaticResource StatValueText}" Foreground="{StaticResource ErrorBrush}"/>
+                    <TextBlock Text="Errors" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding CurrentRequestsPerSecond, StringFormat={}{0:0.#}}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="Req/s (current)" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding OverallRequestsPerSecond, StringFormat={}{0:0.#}}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="Req/s (overall)" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding AvgLatencyMs, StringFormat={}{0:0.#} ms}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="Avg Latency" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding P95LatencyMs, StringFormat={}{0:0.#} ms}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="P95 Latency" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource StatTile}">
+                <StackPanel>
+                    <TextBlock Text="{Binding P99LatencyMs, StringFormat={}{0:0.#} ms}" Style="{StaticResource StatValueText}"/>
+                    <TextBlock Text="P99 Latency" Style="{StaticResource StatLabelText}"/>
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+
+        <oxy:PlotView Grid.Row="1" Model="{Binding ThroughputModel}" Margin="0,4"/>
+        <oxy:PlotView Grid.Row="2" Model="{Binding LatencyModel}" Margin="0,4"/>
+    </Grid>
+</UserControl>
