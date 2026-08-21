@@ -8,5 +8,11 @@
 *.cer
 *.crt
 
+# Also exclude plain-text password/notes files people drop next to a cert (e.g. "password.txt") -
+# this app never reads a password from a file, but nothing stops someone from leaving one here, and
+# it must never end up committed. This folder isn't used for anything else, so *.txt is safe to
+# blanket-exclude aside from the explicit README allowlisted below.
+*.txt
+
 !.gitignore
 !README.md

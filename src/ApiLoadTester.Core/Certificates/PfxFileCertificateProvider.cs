@@ -11,6 +11,13 @@ namespace ApiLoadTester.Core.Certificates;
 /// SecureString by the caller; it is marshaled to unmanaged memory right here, at the point of use,
 /// and zeroed immediately afterwards so plaintext never lingers in managed memory or gets captured
 /// by a debugger heap dump longer than necessary.
+///
+/// Deliberately does NOT use X509KeyStorageFlags.EphemeralKeySet: on Windows, SChannel (which
+/// SslStream/HttpClient use for TLS) cannot present an ephemeral-keyset certificate as a client
+/// certificate during the handshake at all - it fails with "Authentication failed because the
+/// platform does not support ephemeral keys," even though loading the certificate itself succeeds.
+/// DefaultKeySet uses a normal (if short-lived/process-scoped) CNG key container, which is what
+/// mutual-TLS client auth actually requires.
 /// </summary>
 public sealed class PfxFileCertificateProvider : ICertificateProvider
 {
@@ -45,16 +52,7 @@ public sealed class PfxFileCertificateProvider : ICertificateProvider
                     ? default
                     : new ReadOnlySpan<char>((void*)unmanagedPtr, length);
 
-                try
-                {
-                    // EphemeralKeySet avoids persisting the private key to the user's profile key
-                    // store on disk. Not every key algorithm/CSP supports it, so fall back cleanly.
-                    return X509CertificateLoader.LoadPkcs12FromFile(path, passwordSpan, X509KeyStorageFlags.EphemeralKeySet);
-                }
-                catch (CryptographicException)
-                {
-                    return X509CertificateLoader.LoadPkcs12FromFile(path, passwordSpan, X509KeyStorageFlags.DefaultKeySet);
-                }
+                return X509CertificateLoader.LoadPkcs12FromFile(path, passwordSpan, X509KeyStorageFlags.DefaultKeySet);
             }
         }
         finally
